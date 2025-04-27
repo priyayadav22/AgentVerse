@@ -1,0 +1,27 @@
+[
+  {
+    "id": "reply-bee",
+    "name": "ReplyBee",
+    "description": "Instantly generate smart, professional email replies for any situation."
+  },
+  {
+    "id": "idea-spark",
+    "name": "IdeaSpark",
+    "description": "Brainstorm unique ideas for content, products, or startups in seconds."
+  },
+  {
+    "id": "smart-drafter",
+    "name": "SmartDrafter",
+    "description": "Convert rough thoughts into polished drafts, outlines, or documents effortlessly."
+  },
+  {
+    "id": "mind-muse",
+    "name": "MindMuse",
+    "description": "Unlock your creativity and solve complex problems with a thought-provoking AI assistant."
+  },
+  {
+    "id": "pathfinder",
+    "name": "Pathfinder",
+    "description": "Navigate through life's big decisions with guidance, clarity, and actionable steps."
+  }
+]
