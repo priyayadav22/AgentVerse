@@ -31,11 +31,21 @@
         .chat-header {
             background-color: #007bff;
             color: white;
-            padding: 4px;
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
             text-align: center;
+            justify-content: center;
+            gap: 10px;
             font-size: 20px;
             font-weight: bold;
             border-bottom: 3px solid #0056b3;
+        }
+
+        .home-icon {
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
         }
 
         .chat-window {
@@ -146,6 +156,7 @@
 <body>
 <div class="chat-container">
     <header class="chat-header">
+        <img src="https://img.icons8.com/ios-filled/50/ffffff/home.png" class="home-icon" id="homeIcon" alt="Home"/>
         <h1 id="agentName">Chat with ReplyBee</h1>
     </header>
 
@@ -192,20 +203,28 @@
         `;
     }
 
+    // Redirect to home when clicking on the icon
+    document.getElementById('homeIcon').addEventListener('click', () => {
+        window.location.href = "http://localhost:8080/";
+    });
+
     // Chat functionality
     const chatWindow = document.getElementById('chatWindow');
     const messageInput = document.getElementById('messageInput');
     const sendMessageBtn = document.getElementById('sendMessageBtn');
 
-    // Function to simulate agent response (now using GET with query parameters)
+    let messageParts = [];
+
     function simulateAgentResponse(message) {
+        messageParts.push({ text: message });
+
         fetch(`http://localhost:8080/api/agents/${agentName}/ask`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ question: message }) // Send question in the body
-    })
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ contents: { parts: messageParts } })
+        })
         .then(response => {
             if (!response.ok) {
                 throw new Error('Failed to fetch agent response');
@@ -215,17 +234,16 @@
         .then(data => {
             const markdownResponse = data.reply?.candidates?.[0]?.content?.parts?.[0]?.text || "No response available";
 
-            // Convert Markdown to HTML using marked.js
             const htmlResponse = marked.parse(markdownResponse);
 
             const agentMessage = document.createElement('div');
             agentMessage.classList.add('message', 'agent-message');
-            agentMessage.innerHTML = htmlResponse; // Use innerHTML to insert HTML content
+            agentMessage.innerHTML = htmlResponse;
             chatWindow.appendChild(agentMessage);
             chatWindow.scrollTop = chatWindow.scrollHeight;
         })
         .catch(error => {
-            console.log(error);
+            console.error(error);
             const agentMessage = document.createElement('div');
             agentMessage.classList.add('message', 'agent-message');
             agentMessage.textContent = "Error fetching agent response.";
@@ -233,19 +251,6 @@
             chatWindow.scrollTop = chatWindow.scrollHeight;
         });
     }
-
-    // Function to save user message history
-function saveMessageHistory(userMessage) {
-    let messageHistory = JSON.parse(localStorage.getItem('messageHistory')) || [];
-    messageHistory.push({ userMessage, timestamp: new Date() });
-    localStorage.setItem('messageHistory', JSON.stringify(messageHistory));
-}
-
-// Function to load message history
-function loadMessageHistory() {
-    return JSON.parse(localStorage.getItem('messageHistory')) || [];
-}
-
 
     function sendMessage() {
         const userMessage = messageInput.value.trim();
@@ -275,7 +280,6 @@ function loadMessageHistory() {
         sendMessageBtn.addEventListener('click', sendMessage);
     }
 </script>
-
 
 </body>
 </html>
